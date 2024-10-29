@@ -84,8 +84,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ecommercedb',
-        'USER': 'codemealadmin',
-        'PASSWORD': '39672321daN.',
+        'USER': 'postgres',
+        'PASSWORD': 'mangungadb',
         'HOST': 'localhost',
         'PORT': '5432',
     }

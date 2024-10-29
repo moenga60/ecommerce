@@ -4,45 +4,52 @@ from rest_framework import status
 from .models import Product, Category
 from .serializers import ProductSerializer, CategorySerializer
 
-@api_view(["GET", "POST", "PUT", "DELETE"])
-def ProductsView(request, pk=None):
-    print(request.data)
-    if request.method == "GET" and pk is None:
-        products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True)
+@api_view(["GET"])
+def  get_product_list(request):
+    products = Product.objects.all()    
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(["GET"])
+def get_specific_product(request,pk):
+    try:
+        product = Product.objects.get(pk=pk)
+        serializer = ProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    except Product.DoesNotExist:
+        return Response({"message": "The specified product does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-    
-    if request.method == "GET" and pk is not None:
-        try:
-            product = Product.objects.get(pk=pk)
-            serializer = ProductSerializer(product)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        except Product.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+@api_view(["POST"])
+def create_product(request):
+    serializer = ProductSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
- 
-    if request.method == "POST":
-        serializer = ProductSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, sttatus=status.HTTP_400_BAD_REQUEST)
 
-    if request.method == "PUT" and pk is not None:
+@api_view(["PUT"])
+def update_product(request, pk):
+    try:
         product = Product.objects.get(pk=pk)
         serializer = ProductSerializer(product, data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, sttatus=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Product.DoesNotExist:
+        return Response({"message": "The product does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == "DELETE" and pk is not None:
-        print(request.data)
+
+
+@api_view(["DELETE"])
+def delete_product(request, pk):
+    try:
         product = Product.objects.get(pk=pk)
         product.delete()
-        return Response(status=status.HTTP_200_OK)
-
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except Product.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+       
 
     
