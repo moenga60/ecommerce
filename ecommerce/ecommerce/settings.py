@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'products',
     'corsheaders',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -89,8 +90,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ecommercedb',
-        'USER': 'postgres',
-        'PASSWORD': 'mangungadb',
+        'USER': 'codemealadmin',
+        'PASSWORD': '39672321daN.',
         'HOST': 'localhost',
         'PORT': '5432',
     }
